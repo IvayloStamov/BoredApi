@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220714083530_SeedActivityData")]
+    [Migration("20220714102334_SeedActivityData")]
     partial class SeedActivityData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

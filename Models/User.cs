@@ -13,10 +13,9 @@ namespace Models
             UserActivities = new List<UserActivity>();
         }
         public int UserId { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public List<string> Activities { get; set; }
-        public ICollection<UserActivity> UserActivities { get; set; }
+        public string? Username { get; set; } = string.Empty;
+        public string? FirstName { get; set; } = string.Empty;
+        public string? LastName { get; set; } = string.Empty;
+        public ICollection<UserActivity>? UserActivities { get; set; }
     }
 }

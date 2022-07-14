@@ -3,6 +3,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220714102303_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,53 +38,6 @@ namespace Data.Migrations
                     b.HasKey("ActivityId");
 
                     b.ToTable("Activities");
-
-                    b.HasData(
-                        new
-                        {
-                            ActivityId = 1,
-                            ActivityName = "education"
-                        },
-                        new
-                        {
-                            ActivityId = 2,
-                            ActivityName = "recreational"
-                        },
-                        new
-                        {
-                            ActivityId = 3,
-                            ActivityName = "social"
-                        },
-                        new
-                        {
-                            ActivityId = 4,
-                            ActivityName = "diy"
-                        },
-                        new
-                        {
-                            ActivityId = 5,
-                            ActivityName = "charity"
-                        },
-                        new
-                        {
-                            ActivityId = 6,
-                            ActivityName = "cooking"
-                        },
-                        new
-                        {
-                            ActivityId = 7,
-                            ActivityName = "relaxation"
-                        },
-                        new
-                        {
-                            ActivityId = 8,
-                            ActivityName = "music"
-                        },
-                        new
-                        {
-                            ActivityId = 9,
-                            ActivityName = "busywork"
-                        });
                 });
 
             modelBuilder.Entity("Models.User", b =>
@@ -94,12 +49,15 @@ namespace Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
