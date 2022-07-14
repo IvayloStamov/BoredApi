@@ -8,6 +8,6 @@ namespace Data
 {
     public class Config
     {
-        public const string ConnectionString = @"Server=.\sqlexpress;Database=BoredAPI;Integrated Security=True";
+        public const string ConnectionString = @"Server=.\sqlexpress;Database=BoredApiDb;Integrated Security=True";
     }
 }
