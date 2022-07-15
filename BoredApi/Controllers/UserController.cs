@@ -13,24 +13,23 @@ namespace BoredApi.Controllers
         private readonly DataContext context;
         public UserController(DataContext _context)
         {
-            context = _context;
+            context = _context;            
         }
         [HttpGet]
         public async Task<ActionResult<List<User>>> Get()
         {
-            var users = new List<User>();
-            
+            var users = await context.Users.ToListAsync();
+
             return Ok(users);
         }
 
         [HttpPost]
-
         public async Task<ActionResult<List<User>>> AddUser(UserDto user)
         {
             string username = user.Username;
 
             var userCheck = context.Users.FirstOrDefault(x => x.Username == username);
-            if(userCheck != null)
+            if (userCheck != null)
             {
                 return BadRequest($"A user with the userhame ({username}) already exists.");
             }
@@ -51,18 +50,18 @@ namespace BoredApi.Controllers
                 var activities = context.Activities.ToList();
                 foreach (var item in activities)
                 {
-                    if(item.ActivityName.Equals(a))
+                    if (item.ActivityName.Equals(a))
                     {
                         activityId.Add(item.ActivityId);
                         isValidActivity = true;
                         counter++;
                         break;
-                    }                    
+                    }
                 }
                 if (!isValidActivity)
                 {
                     return BadRequest($"Invalid activity ({a}). Please, remove or change it!");
-                }              
+                }
 
             }
             await context.AddAsync(newUser);
@@ -78,10 +77,13 @@ namespace BoredApi.Controllers
                 await context.UserActivities.AddAsync(userActivity);
                 await context.SaveChangesAsync();
             }
-
-
             return Ok(await context.Users.ToListAsync());
         }
 
+        [HttpGet("{activity}/{number}")]
+        //public async Task<ActionResult<List<BoredApiResponse>>> GetAllUsersWithAnActivity(string activity, int number)
+        {
+            
+        }
     }
 }

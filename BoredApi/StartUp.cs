@@ -11,14 +11,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient<IBoredApiService, BoredApiService>(x => 
+{
+    x.BaseAddress = new Uri("http://www.boredapi.com/");
+});
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(Config.ConnectionString);
 });
 
 // Needs further investigation
-//builder.Services.AddControllers().AddJsonOptions(x =>
-//                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 
