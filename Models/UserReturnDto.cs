@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    internal class UserReturnDto
+    public class UserReturnDto
     {
+        public UserReturnDto()
+        {
+            List<UserReturnDto> list = new List<UserReturnDto>(); 
+        }
+        public string Activity { get; set; } = string.Empty;
+        public string TypeOfActivity { get; set; } = string.Empty;
+        public List<string> ListOfUsernames { get; set; }
     }
 }

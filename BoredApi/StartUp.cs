@@ -11,11 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<IBoredApiService, BoredApiService>(x => 
-{
-    x.BaseAddress = new Uri("http://www.boredapi.com/");
-});
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(Config.ConnectionString);
