@@ -17,8 +17,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 // Needs further investigation
-//builder.Services.AddControllers().AddJsonOptions(x =>
-//                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 
