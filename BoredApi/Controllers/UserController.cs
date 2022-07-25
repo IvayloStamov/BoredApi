@@ -1,4 +1,4 @@
-﻿using Data;
+﻿using BoredApi.Data.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
