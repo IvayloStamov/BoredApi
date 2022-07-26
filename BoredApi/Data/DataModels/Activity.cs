@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BoredApi.Data.DataModels;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +12,13 @@ namespace Models
     {
         public Activity()
         {
-            UserActivities = new List<UserActivity>();
+            GroupActivities = new List<GroupActivity>();
         }
+        [Key]
         public int ActivityId { get; set; }
+        [Required]
         public string ActivityName { get; set; } = string.Empty;
-        public ICollection<UserActivity> UserActivities { get; set; }
+        public virtual ICollection<GroupActivity>? GroupActivities { get; set; }
+
     }
 }
