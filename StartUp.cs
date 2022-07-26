@@ -1,4 +1,5 @@
-using BoredApi.Data.Database;
+using BoredApi.Data;
+using BoredApi.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -11,10 +12,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataContext>(options =>
+builder.Services.AddDbContext<BoredApiContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<AddUserService>();
 
 // Needs further investigation
 builder.Services.AddControllers().AddJsonOptions(x =>

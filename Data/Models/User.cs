@@ -1,12 +1,11 @@
-﻿using BoredApi.Data.DataModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
+namespace BoredApi.Data.Models
 {
     public class User
     {
@@ -20,7 +19,7 @@ namespace Models
         public string Username { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public virtual ICollection<UserGroup>? UserGroups { get; set; }
-        public virtual ICollection<JoinActivityRequest> JoinActivityRequests { get; set; }
+        public ICollection<UserGroup>? UserGroups { get; set; }
+        public ICollection<JoinActivityRequest> JoinActivityRequests { get; set; }
     }
 }
