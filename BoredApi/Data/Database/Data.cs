@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BoredApi.Data.DataModels;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace BoredApi.Data.Database
@@ -15,27 +16,37 @@ namespace BoredApi.Data.Database
 
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Activity> Activities { get; set; }
-        public DbSet<UserActivity> UserActivities { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupActivity> GroupActivities { get; set; }
+        public DbSet<JoinActivityRequest> JoinActivityRequests { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserActivity>().HasKey(ua => new
+            modelBuilder.Entity<UserGroup>().HasKey(ug => new
             {
-                ua.ActivityId,
-                ua.UserId
+                ug.GroupId,
+                ug.UserId
             });
 
-            modelBuilder.Entity<UserActivity>()
-                .HasOne(ua => ua.User)
-                .WithMany(ua => ua.UserActivities)
-                .HasForeignKey(ua => ua.UserId);
+            modelBuilder.Entity<GroupActivity>().HasKey(ga => new
+            {
+                ga.ActivityId,
+                ga.GroupId
+            });
 
-            modelBuilder.Entity<UserActivity>()
-                .HasOne(ua => ua.Activity)
-                .WithMany(ua => ua.UserActivities)
-                .HasForeignKey(ua => ua.ActivityId);
+            modelBuilder.Entity<JoinActivityRequest>().HasKey(jr => new
+            {
+                jr.ActivityId,
+                jr.GroupId,
+                jr.UserId
+            });
+            
+            
 
 
             //DataSeeding
