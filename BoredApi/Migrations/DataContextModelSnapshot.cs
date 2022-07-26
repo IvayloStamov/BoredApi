@@ -96,10 +96,10 @@ namespace BoredApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PhotoId"), 1L, 1);
 
-                    b.Property<int?>("GroupActivityActivityId")
+                    b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GroupActivityGroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("PhotoText")
@@ -108,7 +108,7 @@ namespace BoredApi.Migrations
 
                     b.HasKey("PhotoId");
 
-                    b.HasIndex("GroupActivityActivityId", "GroupActivityGroupId");
+                    b.HasIndex("GroupId", "ActivityId");
 
                     b.ToTable("Photos");
                 });
@@ -217,9 +217,13 @@ namespace BoredApi.Migrations
 
             modelBuilder.Entity("BoredApi.Data.DataModels.Photo", b =>
                 {
-                    b.HasOne("BoredApi.Data.DataModels.GroupActivity", null)
+                    b.HasOne("BoredApi.Data.DataModels.GroupActivity", "GroupActivity")
                         .WithMany("Photos")
-                        .HasForeignKey("GroupActivityActivityId", "GroupActivityGroupId");
+                        .HasForeignKey("GroupId", "ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupActivity");
                 });
 
             modelBuilder.Entity("BoredApi.Data.DataModels.UserGroup", b =>
