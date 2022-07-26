@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BoredApi.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -137,17 +137,18 @@ namespace BoredApi.Migrations
                     PhotoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PhotoText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GroupActivityActivityId = table.Column<int>(type: "int", nullable: true),
-                    GroupActivityGroupId = table.Column<int>(type: "int", nullable: true)
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Photos", x => x.PhotoId);
                     table.ForeignKey(
-                        name: "FK_Photos_GroupActivities_GroupActivityActivityId_GroupActivityGroupId",
-                        columns: x => new { x.GroupActivityActivityId, x.GroupActivityGroupId },
+                        name: "FK_Photos_GroupActivities_GroupId_ActivityId",
+                        columns: x => new { x.GroupId, x.ActivityId },
                         principalTable: "GroupActivities",
-                        principalColumns: new[] { "ActivityId", "GroupId" });
+                        principalColumns: new[] { "ActivityId", "GroupId" },
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -161,9 +162,9 @@ namespace BoredApi.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photos_GroupActivityActivityId_GroupActivityGroupId",
+                name: "IX_Photos_GroupId_ActivityId",
                 table: "Photos",
-                columns: new[] { "GroupActivityActivityId", "GroupActivityGroupId" });
+                columns: new[] { "GroupId", "ActivityId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserGroups_UserId",
