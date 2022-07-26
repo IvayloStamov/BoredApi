@@ -1,7 +1,6 @@
-﻿using Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BoredApi.Data.DataModels
+namespace BoredApi.Data.Models
 {
     public class JoinActivityRequest
     {
