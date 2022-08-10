@@ -13,9 +13,9 @@ namespace BoredApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly BoredApiContext _context;
-        private readonly AddUserService _addUserService;
+        private readonly UserService _addUserService;
 
-        public UserController(BoredApiContext context, AddUserService addUserService)
+        public UserController(BoredApiContext context, UserService addUserService)
         {
             _context = context;
             _addUserService = addUserService;
@@ -34,6 +34,7 @@ namespace BoredApi.Controllers
             return await _addUserService.AddUserToTheDatabase(user);
         }
 
+       
         //  [HttpGet("{typeOfActivity}/{number}")]
         //  public async Task<ActionResult<UserReturnDto>> GetUsersBasedOnActivityType(string typeOfActivity, int number)
         //  {

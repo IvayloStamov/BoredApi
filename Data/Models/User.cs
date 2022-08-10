@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BoredApi.Data.Models
 {
@@ -15,7 +10,7 @@ namespace BoredApi.Data.Models
             JoinActivityRequests = new List<JoinActivityRequest>();
         }
         [Key]
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public string Username { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

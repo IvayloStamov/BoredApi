@@ -6,11 +6,11 @@ using Models;
 
 namespace BoredApi.Services
 {
-    public class AddUserService
+    public class UserService : IUserService
     {
         private readonly BoredApiContext _boredApiContext;
 
-        public AddUserService(BoredApiContext boredApiContext)
+        public UserService(BoredApiContext boredApiContext)
         {
             _boredApiContext = boredApiContext;
         }
@@ -19,8 +19,8 @@ namespace BoredApi.Services
         {
             string username = user.Username;
 
-            var userCheck = _boredApiContext.Users.FirstOrDefault(x => x.Username == username);
-            if (userCheck != null)
+            var userToCheck = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
+            if (userToCheck != null)
             {
                 throw new Exception($"A user with the username ({username}) already exists.");
             }
