@@ -19,5 +19,6 @@ namespace BoredApi.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
                
+
     }
 }
