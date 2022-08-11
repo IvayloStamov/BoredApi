@@ -12,69 +12,28 @@ namespace BoredApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly BoredApiContext _context;
-        private readonly UserService _addUserService;
+        private readonly IUserService _userService;
 
-        public UserController(BoredApiContext context, UserService addUserService)
+        public UserController(IUserService addUserService)
         {
-            _context = context;
-            _addUserService = addUserService;
+            _userService = addUserService;
         }
         [HttpGet]
-        public async Task<ActionResult<List<User>>> Get()
+        public async Task<ActionResult<List<UserDto>>> Get()
         {
-            var users = await _context.Users.ToListAsync();
-
-            return Ok(users);
+            return await _userService.GetAllUsersAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<User>>> AddUser(UserDto user)
-        {            
-            return await _addUserService.AddUserToTheDatabase(user);
+        public async Task<ActionResult<List<UserDto>>> AddUser(UserDto user)
+        {
+            return await _userService.AddUserToTheDatabaseAsync(user);
         }
 
-       
-        //  [HttpGet("{typeOfActivity}/{number}")]
-        //  public async Task<ActionResult<UserReturnDto>> GetUsersBasedOnActivityType(string typeOfActivity, int number)
-        //  {
-        //      var Url = $"http://www.boredapi.com/api/activity?type={typeOfActivity}";
-        //
-        //      var httpClient = new HttpClient();
-        //      var response = await httpClient.GetAsync(Url);
-        //      response.EnsureSuccessStatusCode();            
-        //
-        //      var jsonString = await response.Content.ReadAsStringAsync();
-        //
-        //      BoredApiResponse? boredApi = Newtonsoft.Json.JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
-        //
-        //      List<User> listOfUsers = await context.UserActivities
-        //          .Include(x => x.User)
-        //          .Where(y => y.Activity.ActivityName == typeOfActivity)
-        //          .Select(y => y.User)
-        //          .Take(number)
-        //          .ToListAsync();
-        //
-        //      if(listOfUsers.Count == 0)
-        //      {
-        //          return BadRequest($"No users want to take part in this type of activity - {typeOfActivity}");
-        //      }
-        //
-        //      List<string> listOfUsernames = new List<string>();
-        //
-        //      foreach (var user in listOfUsers)
-        //      {
-        //          listOfUsernames.Add(user.Username);
-        //      }
-        //
-        //      var userReturnDto = new UserReturnDto
-        //      {
-        //          Activity = boredApi.Activity,
-        //          TypeOfActivity = typeOfActivity,
-        //          ListOfUsernames = listOfUsernames
-        //      };
-        //
-        //      return userReturnDto;
-        //  }
+        [HttpGet("{typeOfActivity}")]
+        public async Task<ActionResult<string>> GetUsersBasedOnActivityType(string typeOfActivity)
+        {
+            return await _userService.GetUsersBasedOnActivityType(typeOfActivity);
+        }
     }
 }
