@@ -15,7 +15,7 @@ namespace BoredApi.Services
             _boredApiContext = boredApiContext;
         }
 
-        public async Task<ActionResult<List<User>>> AddUserToTheDatabase(UserDto user)
+        public async Task<ActionResult<List<UserDto>>> AddUserToTheDatabaseAsync(UserDto user)
         {
             string username = user.Username;
 
@@ -35,7 +35,44 @@ namespace BoredApi.Services
             await _boredApiContext.AddAsync(newUser);
             await _boredApiContext.SaveChangesAsync();
 
-            return await _boredApiContext.Users.ToListAsync();
+            var returnResult = await _boredApiContext.Users
+                .Select(x => new UserDto()
+                {
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Username = x.Username
+                })
+                .ToListAsync();
+            return returnResult;
+        }
+
+        public async Task<ActionResult<List<UserDto>>> GetAllUsersAsync()
+        {
+            var returnResult = await _boredApiContext.Users
+                .Select(x => new UserDto()
+                {
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Username = x.Username
+                })
+                .ToListAsync();
+
+            return returnResult;
+        }
+
+        public async Task<ActionResult<string>> GetUsersBasedOnActivityType(string typeOfActivity)
+        {
+            var Url = $"http://www.boredapi.com/api/activity?type={typeOfActivity}";
+
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(Url);
+            response.EnsureSuccessStatusCode();
+
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            BoredApiResponse? boredApi = Newtonsoft.Json.JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
+
+            return boredApi.Activity;
         }
     }
 }

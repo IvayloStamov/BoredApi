@@ -11,6 +11,34 @@ namespace BoredApi.Data
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<JoinActivityRequest>()
+                .HasKey(ja => new
+                {
+                    ja.ActivityId,
+                    ja.GroupId,
+                    ja.UserId
+                });
+
+            modelBuilder.Entity<GroupActivity>()
+                .HasKey(ga => new
+                {
+                    ga.ActivityId,
+                    ga.GroupId
+                });
+                
+
+            modelBuilder.Entity<UserGroup>()
+                .HasKey(ug => new
+                {
+                    ug.UserId,
+                    ug.GroupId
+                });
+
+          
+        }
+
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupActivity> GroupActivities { get; set; }
@@ -18,7 +46,5 @@ namespace BoredApi.Data
         public DbSet<Photo> Photos { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
-               
-
     }
 }

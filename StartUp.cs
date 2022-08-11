@@ -17,7 +17,8 @@ builder.Services.AddDbContext<BoredApiContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 // Needs further investigation
 //builder.Services.AddControllers().AddJsonOptions(x =>

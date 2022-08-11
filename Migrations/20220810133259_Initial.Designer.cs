@@ -4,6 +4,7 @@ using BoredApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoredApi.Migrations
 {
     [DbContext(typeof(BoredApiContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220810133259_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,13 +24,30 @@ namespace BoredApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.Group", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.Activity", b =>
                 {
-                    b.Property<int>("GroupId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ActivityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Activities");
+                });
+
+            modelBuilder.Entity("BoredApi.Data.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
@@ -38,12 +57,12 @@ namespace BoredApi.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.HasKey("GroupId");
+                    b.HasKey("Id");
 
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.GroupActivity", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.GroupActivity", b =>
                 {
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -53,6 +72,9 @@ namespace BoredApi.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -67,7 +89,7 @@ namespace BoredApi.Migrations
                     b.ToTable("GroupActivities");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.JoinActivityRequest", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.JoinActivityRequest", b =>
                 {
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -88,15 +110,21 @@ namespace BoredApi.Migrations
                     b.ToTable("JoinActivityRequests");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.Photo", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.Photo", b =>
                 {
-                    b.Property<int>("PhotoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PhotoId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupActivityActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupActivityGroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("GroupId")
@@ -106,59 +134,20 @@ namespace BoredApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PhotoId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GroupId", "ActivityId");
+                    b.HasIndex("GroupActivityActivityId", "GroupActivityGroupId");
 
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.UserGroup", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.User", b =>
                 {
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UserEntryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("GroupId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserGroups");
-                });
-
-            modelBuilder.Entity("Models.Activity", b =>
-                {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityId"), 1L, 1);
-
-                    b.Property<string>("ActivityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ActivityId");
-
-                    b.ToTable("Activities");
-                });
-
-            modelBuilder.Entity("Models.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -172,20 +161,38 @@ namespace BoredApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.GroupActivity", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.UserGroup", b =>
                 {
-                    b.HasOne("Models.Activity", "Activity")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UserEntryDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UserGroups");
+                });
+
+            modelBuilder.Entity("BoredApi.Data.Models.GroupActivity", b =>
+                {
+                    b.HasOne("BoredApi.Data.Models.Activity", "Activity")
                         .WithMany("GroupActivities")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BoredApi.Data.DataModels.Group", "Group")
+                    b.HasOne("BoredApi.Data.Models.Group", "Group")
                         .WithMany("GroupActivities")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -196,15 +203,15 @@ namespace BoredApi.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.JoinActivityRequest", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.JoinActivityRequest", b =>
                 {
-                    b.HasOne("Models.User", "User")
+                    b.HasOne("BoredApi.Data.Models.User", "User")
                         .WithMany("JoinActivityRequests")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BoredApi.Data.DataModels.GroupActivity", "GroupActivity")
+                    b.HasOne("BoredApi.Data.Models.GroupActivity", "GroupActivity")
                         .WithMany("JoinActivityRequests")
                         .HasForeignKey("ActivityId", "GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -215,26 +222,26 @@ namespace BoredApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.Photo", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.Photo", b =>
                 {
-                    b.HasOne("BoredApi.Data.DataModels.GroupActivity", "GroupActivity")
+                    b.HasOne("BoredApi.Data.Models.GroupActivity", "GroupActivity")
                         .WithMany("Photos")
-                        .HasForeignKey("GroupId", "ActivityId")
+                        .HasForeignKey("GroupActivityActivityId", "GroupActivityGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GroupActivity");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.UserGroup", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.UserGroup", b =>
                 {
-                    b.HasOne("BoredApi.Data.DataModels.Group", "Group")
+                    b.HasOne("BoredApi.Data.Models.Group", "Group")
                         .WithMany("UserGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.User", "User")
+                    b.HasOne("BoredApi.Data.Models.User", "User")
                         .WithMany("UserGroups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -245,26 +252,26 @@ namespace BoredApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.Group", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.Activity", b =>
+                {
+                    b.Navigation("GroupActivities");
+                });
+
+            modelBuilder.Entity("BoredApi.Data.Models.Group", b =>
                 {
                     b.Navigation("GroupActivities");
 
                     b.Navigation("UserGroups");
                 });
 
-            modelBuilder.Entity("BoredApi.Data.DataModels.GroupActivity", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.GroupActivity", b =>
                 {
                     b.Navigation("JoinActivityRequests");
 
                     b.Navigation("Photos");
                 });
 
-            modelBuilder.Entity("Models.Activity", b =>
-                {
-                    b.Navigation("GroupActivities");
-                });
-
-            modelBuilder.Entity("Models.User", b =>
+            modelBuilder.Entity("BoredApi.Data.Models.User", b =>
                 {
                     b.Navigation("JoinActivityRequests");
 

@@ -7,8 +7,6 @@
 
         public int UserId { get; set; }
         public User User { get; set; }
-
-        public string Username { get; set; } = string.Empty;
         public DateTime UserEntryDate { get; set; }
     }
 }
