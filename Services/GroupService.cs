@@ -122,7 +122,7 @@ namespace BoredApi.Services
                 throw new Exception($"A group with the id ({groupId}) does not exist.");
             }
 
-            if(ownerId != group.OwnerId)
+            if (ownerId != group.OwnerId)
             {
                 throw new Exception($"A user with the id ({ownerId}) does not have the rights to add new users to the group.");
             }
@@ -180,7 +180,7 @@ namespace BoredApi.Services
                 .Select(x => new ReturnGroupDto()
                 {
                     Name = x.Name,
-                    OwnerId= x.OwnerId,
+                    OwnerId = x.OwnerId,
                     Users = x.UserGroups
                     .Select(y => y.UserId)
                     .ToList()
@@ -204,7 +204,7 @@ namespace BoredApi.Services
                 throw new Exception($"A user with the id ({ownerId}) does not have the rights to remove users from the group.");
             }
 
-            if(ownerId == userId)
+            if (ownerId == userId)
             {
                 throw new Exception($"The owner of the group can not remove him/her-self from the group.");
             }
@@ -219,13 +219,13 @@ namespace BoredApi.Services
 
             foreach (UserGroup ug in group.UserGroups)
             {
-                if(ug.UserId == userId)
+                if (ug.UserId == userId)
                 {
                     isInTheGroup = true;
                 }
             }
 
-            if(!isInTheGroup)
+            if (!isInTheGroup)
             {
                 throw new Exception($"The user with the id ({userId}) is not part of the group.");
             }
@@ -248,6 +248,6 @@ namespace BoredApi.Services
             };
 
             return groupDto;
-        }        
+        }
     }
 }

@@ -8,11 +8,9 @@ namespace BoredApi.Data.Models
         public int UserId { get; set; }
         public virtual User User { get; set; } = null!;
 
-
-        [ForeignKey("ActivityId, GroupId")]
+        [ForeignKey(nameof(GroupActivity))]
+        public int GroupActivityId { get; set; }
         public GroupActivity GroupActivity { get; set; } = null!;
-        public int ActivityId { get; set; }
-        public int GroupId { get; set; }
 
         public bool? HasAccepted { get; set; }
     }
