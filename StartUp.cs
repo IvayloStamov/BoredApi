@@ -19,6 +19,8 @@ builder.Services.AddDbContext<BoredApiContext>(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IActivityService, ActivityService>();
+
 
 // Needs further investigation
 //builder.Services.AddControllers().AddJsonOptions(x =>
