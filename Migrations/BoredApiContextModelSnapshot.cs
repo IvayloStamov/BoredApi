@@ -65,16 +65,19 @@ namespace BoredApi.Migrations
 
             modelBuilder.Entity("BoredApi.Data.Models.GroupActivity", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -83,7 +86,9 @@ namespace BoredApi.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("ActivityId", "GroupId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
 
                     b.HasIndex("GroupId");
 
@@ -92,21 +97,18 @@ namespace BoredApi.Migrations
 
             modelBuilder.Entity("BoredApi.Data.Models.JoinActivityRequest", b =>
                 {
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupActivityId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("HasAccepted")
                         .HasColumnType("bit");
 
-                    b.HasKey("ActivityId", "GroupId", "UserId");
+                    b.HasKey("UserId", "GroupActivityId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("GroupActivityId");
 
                     b.ToTable("JoinActivityRequests");
                 });
@@ -122,10 +124,7 @@ namespace BoredApi.Migrations
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupActivityActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupActivityGroupId")
+                    b.Property<int>("GroupActivityId")
                         .HasColumnType("int");
 
                     b.Property<int>("GroupId")
@@ -137,7 +136,7 @@ namespace BoredApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupActivityActivityId", "GroupActivityGroupId");
+                    b.HasIndex("GroupActivityId");
 
                     b.ToTable("Photos");
                 });
@@ -212,15 +211,15 @@ namespace BoredApi.Migrations
 
             modelBuilder.Entity("BoredApi.Data.Models.JoinActivityRequest", b =>
                 {
-                    b.HasOne("BoredApi.Data.Models.User", "User")
+                    b.HasOne("BoredApi.Data.Models.GroupActivity", "GroupActivity")
                         .WithMany("JoinActivityRequests")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("GroupActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BoredApi.Data.Models.GroupActivity", "GroupActivity")
+                    b.HasOne("BoredApi.Data.Models.User", "User")
                         .WithMany("JoinActivityRequests")
-                        .HasForeignKey("ActivityId", "GroupId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -233,7 +232,7 @@ namespace BoredApi.Migrations
                 {
                     b.HasOne("BoredApi.Data.Models.GroupActivity", "GroupActivity")
                         .WithMany("Photos")
-                        .HasForeignKey("GroupActivityActivityId", "GroupActivityGroupId")
+                        .HasForeignKey("GroupActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
