@@ -59,20 +59,5 @@ namespace BoredApi.Services
 
             return returnResult;
         }
-
-        public async Task<ActionResult<string>> GetUsersBasedOnActivityType(string typeOfActivity)
-        {
-            var Url = $"http://www.boredapi.com/api/activity?type={typeOfActivity}";
-
-            var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(Url);
-            response.EnsureSuccessStatusCode();
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-
-            BoredApiResponse? boredApi = Newtonsoft.Json.JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
-
-            return boredApi.Activity;
-        }
     }
 }

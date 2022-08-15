@@ -30,10 +30,5 @@ namespace BoredApi.Controllers
             return await _userService.AddUserToTheDatabaseAsync(user);
         }
 
-        [HttpGet("{typeOfActivity}")]
-        public async Task<ActionResult<string>> GetUsersBasedOnActivityType(string typeOfActivity)
-        {
-            return await _userService.GetUsersBasedOnActivityType(typeOfActivity);
-        }
     }
 }
