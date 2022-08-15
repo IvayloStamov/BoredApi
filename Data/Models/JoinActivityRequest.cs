@@ -6,11 +6,11 @@ namespace BoredApi.Data.Models
     {
         [ForeignKey(nameof(User))]
         public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
 
 
         [ForeignKey("ActivityId, GroupId")]
-        public virtual GroupActivity GroupActivity { get; set; }
+        public GroupActivity GroupActivity { get; set; } = null!;
         public int ActivityId { get; set; }
         public int GroupId { get; set; }
 

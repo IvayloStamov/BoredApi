@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoredApi.Migrations
 {
     [DbContext(typeof(BoredApiContext))]
-    [Migration("20220810133259_Initial")]
+    [Migration("20220811095046_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,9 @@ namespace BoredApi.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -176,6 +179,12 @@ namespace BoredApi.Migrations
 
                     b.Property<DateTime>("UserEntryDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("isAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isOwner")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserId", "GroupId");
 

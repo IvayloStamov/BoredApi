@@ -55,6 +55,9 @@ namespace BoredApi.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
@@ -174,6 +177,12 @@ namespace BoredApi.Migrations
 
                     b.Property<DateTime>("UserEntryDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("isAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isOwner")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserId", "GroupId");
 

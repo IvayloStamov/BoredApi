@@ -1,4 +1,5 @@
 ﻿using BoredApi.Data.DataModels.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BoredApi.Data.Models
@@ -10,10 +11,14 @@ namespace BoredApi.Data.Models
             Photos = new List<Photo>();
             JoinActivityRequests = new List<JoinActivityRequest>();
         }
+        [Key]
         public int Id { get; set; }
+
+        [ForeignKey(nameof(Group))]
         public int GroupId { get; set; }
         public Group Group { get; set; }
-       
+
+        [ForeignKey(nameof(Activity))]
         public int ActivityId { get; set; }
         public Activity Activity { get; set; }
 
