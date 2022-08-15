@@ -18,11 +18,27 @@ namespace BoredApi.Controllers
         }
 
         [HttpPost("{adminId}")]
-        public async Task<ActionResult<List<GroupDto>>> CreateGroup(int adminId, GroupDto dto)
+        public async Task<ActionResult<List<ReturnGroupDto>>> CreateGroup(int adminId, GroupDto dto)
         {
             return await _groupService.CreateGroupAsync(adminId, dto);
         }
 
+        [HttpPut("{ownerId}")]
+        public async Task<ActionResult<ReturnGroupDto>> AddNewUser(int groupId, int newUserId, int ownerId)
+        {
+            return await _groupService.AddUserToGroupAsync(groupId, newUserId, ownerId);
+        }
 
+        [HttpGet]
+        public async Task<ActionResult<List<ReturnGroupDto>>> GetAllUsers()
+        {
+            return await _groupService.ReturnAllGroupsAsync();
+        }
+
+        [HttpDelete("{ownerId}")]
+        public async Task<ActionResult<ReturnGroupDto>> RemoveUser(int groupId, int userId, int ownerId)
+        {
+            return await _groupService.DeleteUserFromGroupAsync(groupId, userId, ownerId);
+        }
     }
 }

@@ -9,9 +9,8 @@ namespace BoredApi.Data.Models
         [Required]
         public string PhotoText { get; set; } = string.Empty;
 
-        
         public int GroupId { get; set; }
         public int ActivityId { get; set; }
-        public GroupActivity GroupActivity { get; set; }
+        public GroupActivity GroupActivity { get; set; } = null!;
     }
 }

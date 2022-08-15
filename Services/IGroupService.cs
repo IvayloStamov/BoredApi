@@ -6,6 +6,10 @@ namespace BoredApi.Services
 {
     public interface IGroupService
     {
-        public Task<ActionResult<List<GroupDto>>> CreateGroupAsync(int adminId, GroupDto dto);
+        public Task<ActionResult<List<ReturnGroupDto>>> CreateGroupAsync(int adminId, GroupDto dto);
+        public Task<ActionResult<ReturnGroupDto>> AddUserToGroupAsync(int groupId, int newUserId, int ownerId);
+        public Task<ActionResult<List<ReturnGroupDto>>> ReturnAllGroupsAsync();
+        public Task<ActionResult<ReturnGroupDto>> DeleteUserFromGroupAsync(int groupId, int userId, int ownerId);
+
     }
 }
