@@ -13,10 +13,16 @@ namespace BoredApi.Controllers
         {
             _activityService = activityService;
         }
-        [HttpGet]
-        public async Task<ActionResult<string>> GetRandomActivity(int userId, int groupId)
+
+        [HttpGet("{userId}, {groupId}")]
+        public async Task<ActionResult<string>> GetRandomActivityInGroup(int userId, int groupId)
         {
-            return await _activityService.GetRandomActivityAsync(userId, groupId);
+            return await _activityService.GetRandomActivityInGroupAsync(userId, groupId);
+        }
+        [HttpGet]
+        public async Task<ActionResult<string>> GetRandomActivityAlone()
+        {
+            return await _activityService.GetRandomActivityAloneAsync();
         }
     }
 }

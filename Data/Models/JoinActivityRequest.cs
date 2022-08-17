@@ -12,7 +12,7 @@ namespace BoredApi.Data.Models
         [ForeignKey(nameof(GroupActivity))]
         public int GroupActivityId { get; set; }
         public GroupActivity GroupActivity { get; set; } = null!;
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public Status HasAccepted { get; set; }
     }
 }
