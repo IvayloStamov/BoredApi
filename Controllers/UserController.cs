@@ -1,6 +1,7 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.Models;
 using BoredApi.Services;
+using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,12 @@ namespace BoredApi.Controllers
         public async Task<ActionResult<List<UserDto>>> AddUser(UserDto user)
         {
             return await _userService.AddUserToTheDatabaseAsync(user);
+        }
+
+        [HttpGet("{groupId}")]
+        public async Task<ActionResult<List<UserWithActivitiesDto>>> GetUsersWithActivities(int groupId)
+        {
+            return await _userService.ShowAllRequestsAsync(groupId);
         }
 
     }

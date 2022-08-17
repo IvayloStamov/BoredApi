@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoredApi.Migrations
 {
     [DbContext(typeof(BoredApiContext))]
-    [Migration("20220815131855_addNameToGaAndJga")]
-    partial class addNameToGaAndJga
+    [Migration("20220816165253_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,8 +109,8 @@ namespace BoredApi.Migrations
                     b.Property<int>("GroupActivityId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("HasAccepted")
-                        .HasColumnType("bit");
+                    b.Property<int>("HasAccepted")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

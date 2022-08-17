@@ -4,6 +4,7 @@ namespace BoredApi.Services
 {
     public interface IActivityService
     {
-        public Task<ActionResult<string>> GetRandomActivityAsync(int userId, int groupId);
+        public Task<ActionResult<string>> GetRandomActivityInGroupAsync(int userId, int groupId);
+        public Task<ActionResult<string>> GetRandomActivityAloneAsync();
     }
 }

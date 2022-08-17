@@ -20,6 +20,7 @@ builder.Services.AddDbContext<BoredApiContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
 
 
 // Needs further investigation

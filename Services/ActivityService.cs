@@ -16,7 +16,29 @@ namespace BoredApi.Services
         {
             _boredApiContext = boredApiContext;
         }
-        public async Task<ActionResult<string>> GetRandomActivityAsync(int userId, int groupId)
+
+        public async Task<ActionResult<string>> GetRandomActivityAloneAsync()
+        {
+            var Url = $"http://www.boredapi.com/api/activity?participants={1}";
+
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(Url);
+            response.EnsureSuccessStatusCode();
+
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            BoredApiResponse? boredApiResponse = JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
+            string activityName = boredApiResponse.Activity;
+
+            Activity activity = new Activity()
+            {
+                ActivityName = activityName,
+            };
+
+            return activityName;
+        }
+
+        public async Task<ActionResult<string>> GetRandomActivityInGroupAsync(int userId, int groupId)
         {
             var group = await _boredApiContext.Groups
                 .Include(ug => ug.UserGroups)
@@ -24,15 +46,13 @@ namespace BoredApi.Services
             if (group == null)
             {
                 throw new Exception($"A group with the id ({groupId}) does not exist.");
-            }            
+            }
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
                 throw new Exception($"A user with the id ({userId}) does not exist.");
             }
-
-            
 
             int numberOfPeople = group.UserGroups.Count;
             var Url = $"http://www.boredapi.com/api/activity?participants={numberOfPeople}";
@@ -50,6 +70,18 @@ namespace BoredApi.Services
             {
                 ActivityName = activityName,
             };
+
+            var groupActivities = await _boredApiContext.GroupActivities
+                .Where(x => x.GroupId == groupId)
+                .ToListAsync();
+
+            foreach (var ga in groupActivities)
+            {
+                if ((int)ga.Status == 0 || (int)ga.Status == 2 || ga.EndDate == null)
+                {
+                    throw new Exception("There is already an active activity.");
+                }
+            }
 
             _boredApiContext.Activities.Add(activity);
             await _boredApiContext.SaveChangesAsync();
@@ -83,7 +115,6 @@ namespace BoredApi.Services
                 currentUser.JoinActivityRequests.Add(joinRequest);
                 await _boredApiContext.SaveChangesAsync();
             }
-            
 
             return activityName;
         }

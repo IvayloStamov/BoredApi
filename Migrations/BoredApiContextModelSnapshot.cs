@@ -107,8 +107,8 @@ namespace BoredApi.Migrations
                     b.Property<int>("GroupActivityId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("HasAccepted")
-                        .HasColumnType("bit");
+                    b.Property<int>("HasAccepted")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
