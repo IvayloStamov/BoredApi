@@ -63,30 +63,6 @@ namespace BoredApi.Services
 
         public async Task<ActionResult<List<UserWithActivitiesDto>>> ShowAllRequestsAsync(int groupId)
         {
-
-            //var group = await _boredApiContext.Groups
-            //    .Include(x => x.UserGroups)
-            //    .ThenInclude(y => y.User)
-            //    .FirstOrDefaultAsync(x => x.Id == groupId);
-
-
-            //var returnResult = await _boredApiContext.Users
-            //    .Include(x => x.JoinActivityRequests.Where(y => (int)y.HasAccepted != 2 && (int)y.HasAccepted != 1))
-            //    .Include(x => x.UserGroups)
-            //    .ThenInclude(y => y.User)
-            //    .Where(x => x.Id == groupId)
-
-            //    .Select(x => new UserWithActivitiesDto()
-            //    {
-            //        Username = x.Username,
-            //        Requests = x.JoinActivityRequests.Select(a => new ActivityDto()
-            //        {
-            //            ActivityName = a.Name,
-            //            Status = a.HasAccepted,
-            //        }).ToList()
-            //    })
-            //    .ToListAsync();
-
             var returnResult = await _boredApiContext.JoinActivityRequests
                 .Include(x => x.User)
                 .ThenInclude(y => y.UserGroups.Where(z => z.GroupId == groupId))
