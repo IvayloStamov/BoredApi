@@ -48,6 +48,38 @@ namespace BoredApi.Services
 
             await _boredApiContext.SaveChangesAsync();
 
+            var groupActivity = await _boredApiContext.GroupActivities
+                .Include(x => x.JoinActivityRequests)
+                .Where(x => x.GroupId == groupId)
+                .Where(x => x.JoinActivityRequests.Any(z => z.UserId == userId))
+                .FirstOrDefaultAsync();
+
+            if (joinRequests.HasAccepted == Status.Declined)
+            {
+                groupActivity.Status = Status.Declined;
+                await _boredApiContext.SaveChangesAsync();
+            }
+
+            bool isAcceptedByAll = false;
+            if ((int)joinRequests.HasAccepted == 1)
+            {
+                isAcceptedByAll = true;
+                foreach (var ga in groupActivity.JoinActivityRequests)
+                {
+                    if (ga.HasAccepted != Status.Accepted)
+                    {
+                        isAcceptedByAll = false;
+                        break;
+                    }
+                }
+            }
+
+            if(isAcceptedByAll)
+            {
+                groupActivity.Status = Status.Accepted;
+                await _boredApiContext.SaveChangesAsync();
+            }
+
             RequestDto requestDto = new RequestDto()
             {
                 Name = joinRequests.Name,

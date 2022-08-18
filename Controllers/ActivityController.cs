@@ -24,5 +24,10 @@ namespace BoredApi.Controllers
         {
             return await _activityService.GetRandomActivityAloneAsync();
         }
+        [HttpPost]
+        public async Task<ActionResult<string>> EndActivity(int userId, int groupId)
+        {
+            return await _activityService.EndAnActivityAsync(userId, groupId);
+        }
     }
 }
