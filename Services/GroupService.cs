@@ -30,7 +30,7 @@ namespace BoredApi.Services
                 throw new Exception($"A user with the id ({ownerId}) does not exist.");
             }
 
-
+            // TODO: Optimise Database call, remove break and continue statements, foreach
             for (int i = 0; i < dto.Users.Count; i++)
             {
                 var currentUser = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == dto.Users[i]);

@@ -15,11 +15,9 @@ namespace BoredApi.Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [ForeignKey(nameof(Group))]
         public int GroupId { get; set; }
         public Group Group { get; set; }
 
-        [ForeignKey(nameof(Activity))]
         public int ActivityId { get; set; }
         public Activity Activity { get; set; }
 

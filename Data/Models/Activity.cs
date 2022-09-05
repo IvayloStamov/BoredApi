@@ -6,7 +6,7 @@ namespace BoredApi.Data.Models
     {      
         public int Id { get; set; }
         [Required]
-        public string ActivityName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public virtual ICollection<GroupActivity>? GroupActivities { get; set; } = new List<GroupActivity>();
     }
 }
