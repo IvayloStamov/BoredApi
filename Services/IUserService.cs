@@ -7,7 +7,7 @@ namespace BoredApi.Services
 {
     public interface IUserService
     {
-        public Task<ActionResult<List<UserDto>>> GetAllUsersAsync();
+        public Task<List<UserDto>> GetAllUsersAsync();
         public Task<ActionResult<List<UserDto>>> AddUserToTheDatabaseAsync(UserDto user);
         public Task<ActionResult<List<UserWithActivitiesDto>>> ShowAllRequestsAsync(int groupId);
     }

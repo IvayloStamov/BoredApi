@@ -31,7 +31,7 @@ namespace BoredApi.Services
 
             Activity activity = new Activity()
             {
-                ActivityName = activityName,
+                Name = activityName,
             };
 
             return activityName;
@@ -44,7 +44,8 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new Exception($"A group with the id ({groupId}) does not exist.");
+                // TODO: Use proper exceptions
+                throw new KeyNotFoundException($"A group with the id ({groupId}) does not exist.");
             }
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
@@ -53,6 +54,7 @@ namespace BoredApi.Services
                 throw new Exception($"A user with the id ({userId}) does not exist.");
             }
 
+            // TODO: Refactor the code, extract it to another service
             int numberOfPeople = group.UserGroups.Count;
             var Url = $"http://www.boredapi.com/api/activity?participants={numberOfPeople}";
 
@@ -66,7 +68,7 @@ namespace BoredApi.Services
 
             Activity activity = new Activity()
             {
-                ActivityName = activityName,
+                Name = activityName,
             };
 
             var groupActivities = await _boredApiContext.GroupActivities
@@ -75,7 +77,7 @@ namespace BoredApi.Services
 
             foreach (var ga in groupActivities)
             {
-                if ((int)ga.Status == 0 || ((int)ga.Status == 1 && ga.EndDate == null))
+                if (ga.Status == Status.Pending || (ga.Status == Status.Accepted && ga.EndDate == null))
                 {
                     throw new Exception("There is already an active activity.");
                 }
@@ -90,12 +92,14 @@ namespace BoredApi.Services
                 ActivityId = activity.Id,
                 StartDate = DateTime.Now,
                 Status = 0,
-                Name = activity.ActivityName
+                Name = activity.Name
             };
 
             _boredApiContext.GroupActivities.Add(groupActivity);
             await _boredApiContext.SaveChangesAsync();
 
+
+            // TODO: This needs to be remade and no SaveChanges in forloops
             foreach (UserGroup u in group.UserGroups)
             {
                 User currentUser = _boredApiContext.Users
@@ -117,6 +121,7 @@ namespace BoredApi.Services
             return activityName;
         }
 
+        // TODO: Implement Error handling middleware / BadRequest should be returned
         public async Task<ActionResult<string>> EndAnActivityAsync(int userId, int groupId)
         {
             var group = await _boredApiContext.Groups

@@ -9,6 +9,7 @@ namespace BoredApi.Services
 {
     public class UserService : IUserService
     {
+        // TODO: Rename the services that are not services to repositories 
         private readonly BoredApiContext _boredApiContext;
 
         public UserService(BoredApiContext boredApiContext)
@@ -47,7 +48,7 @@ namespace BoredApi.Services
             return returnResult;
         }
 
-        public async Task<ActionResult<List<UserDto>>> GetAllUsersAsync()
+        public async Task<List<UserDto>> GetAllUsersAsync()
         {
             var returnResult = await _boredApiContext.Users
                 .Select(x => new UserDto()

@@ -22,6 +22,7 @@ namespace BoredApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> Get()
         {
+            
             return await _userService.GetAllUsersAsync();
         }
 
