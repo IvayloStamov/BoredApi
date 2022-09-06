@@ -119,10 +119,18 @@ namespace BoredApi.Services
         {
             var user = await _boredApiContext.Users
                 .Include(x => x.UserGroups)
+                .Include(x => x.JoinActivityRequests)
                 .FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
                 throw new Exception($"A user with the id ({userId}) does not exist.");
+            }
+
+            var group = await _boredApiContext.Groups
+                .FirstOrDefaultAsync(x => x.Id == groupId);
+            if (group == null)
+            {
+                throw new Exception($"A group with the id ({groupId}) does not exist.");
             }
 
             if (!user.UserGroups.Any(x => x.GroupId == groupId))
@@ -134,16 +142,15 @@ namespace BoredApi.Services
                 .Include(x => x.User)
                 .ThenInclude(y => y.UserGroups)
                 .Include(x => x.GroupActivity)
-                .Where(x => x.UserId == userId)
-                .Where(x => x.GroupActivity.GroupId == groupId)
-                .Where(x => x.HasAccepted == Status.Pending)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.UserId == userId
+                && x.GroupActivity.GroupId == groupId
+                && x.HasAccepted == Status.Pending);
 
             if (joinRequests == null)
             {
                 throw new Exception("There are not currently requests.");
             }
-
+            // TODO: JoinActivityRequest Status needs to become declined, when the activity is declined
             RequestDto requestDto = new RequestDto()
             {
                 Name = joinRequests.Name,
