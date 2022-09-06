@@ -1,5 +1,6 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.Models;
+using BoredApi.Data.Models.Exceptions;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +8,12 @@ using Models;
 
 namespace BoredApi.Services
 {
-    public class UserService : IUserService
+    public class UserRepository : IUserService
     {
         // TODO: Rename the services that are not services to repositories 
         private readonly BoredApiContext _boredApiContext;
 
-        public UserService(BoredApiContext boredApiContext)
+        public UserRepository(BoredApiContext boredApiContext)
         {
             _boredApiContext = boredApiContext;
         }
@@ -24,7 +25,7 @@ namespace BoredApi.Services
             var userToCheck = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
             if (userToCheck != null)
             {
-                throw new Exception($"A user with the username ({username}) already exists.");
+                throw new UserAlreadyExistsException(user.Username);
             }
 
             User newUser = new User

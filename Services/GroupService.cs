@@ -1,5 +1,6 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.Models;
+using BoredApi.Data.Models.Exceptions;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,13 @@ namespace BoredApi.Services
 
             if (groupDto != null)
             {
-                throw new Exception($"A group with the name ({dto.Name}) already exists.");
+                throw new GroupAlreadyExistsException(dto.Name);
             }
 
             var owner = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == ownerId);
             if (owner == null)
             {
-                throw new Exception($"A user with the id ({ownerId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(ownerId);
             }
 
             // TODO: Optimise Database call, remove break and continue statements, foreach
@@ -110,7 +111,6 @@ namespace BoredApi.Services
 
             return outputResult;
         }
-
         public async Task<ActionResult<ReturnGroupDto>> AddUserToGroupAsync(int groupId, int newUserId, int ownerId)
         {
 
@@ -119,25 +119,25 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new Exception($"A group with the id ({groupId}) does not exist.");
+                throw new SuchAGroupDoesNotExistException(groupId);
             }
 
             if (ownerId != group.OwnerId)
             {
-                throw new Exception($"A user with the id ({ownerId}) does not have the rights to add new users to the group.");
+                throw new UserIsNotTheOwnerOfTheGroupException(ownerId);
             }
 
             var newUser = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == newUserId);
             if (newUser == null)
             {
-                throw new Exception($"A user with the id ({newUserId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(newUserId);
             }
 
             foreach (UserGroup ug in group.UserGroups)
             {
                 if (ug.UserId == newUserId)
                 {
-                    throw new Exception($"The user with the id ({newUserId}) is already a part of the group.");
+                    throw new UserAlreadyPartOfTheGroupException(newUserId);
                 }
             }
 
@@ -160,20 +160,8 @@ namespace BoredApi.Services
                 Users = output.UserGroups.Select(x => x.UserId).ToList()
             };
 
-            //var returnDto = await _boredApiContext.Groups
-            //    .Select(x => new ReturnGroupDto()
-            //    {
-            //        Name = x.Name,
-            //        OwnerId = x.OwnerId,
-            //        Users = x.UserGroups
-            //        .Select(x => x.UserId)
-            //        .ToList()
-            //    }).ToListAsync();
-
-
             return groupDto;
         }
-
         public async Task<ActionResult<List<ReturnGroupDto>>> ReturnAllGroupsAsync()
         {
             var dtos = await _boredApiContext.Groups
@@ -196,23 +184,23 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new Exception($"A group with the id ({groupId}) does not exist.");
+                throw new SuchAGroupDoesNotExistException(groupId);
             }
 
             if (ownerId != group.OwnerId)
             {
-                throw new Exception($"A user with the id ({ownerId}) does not have the rights to remove users from the group.");
+                throw new UserIsNotTheOwnerOfTheGroupException(ownerId);
             }
 
             if (ownerId == userId)
             {
-                throw new Exception($"The owner of the group can not remove him/her-self from the group.");
+                throw new OwnerCannotRemoveThemselvesFromTheGroupException();
             }
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"A user with the id ({userId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(userId);
             }
 
             bool isInTheGroup = false;
@@ -227,7 +215,7 @@ namespace BoredApi.Services
 
             if (!isInTheGroup)
             {
-                throw new Exception($"The user with the id ({userId}) is not part of the group.");
+                throw new UserIsNotPartOfTheGroupException(userId);
             }
 
             var userGroupToRemoved = await _boredApiContext.UserGroups.FirstAsync(x => x.GroupId == groupId && x.UserId == userId);
