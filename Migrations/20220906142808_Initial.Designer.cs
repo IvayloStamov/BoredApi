@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoredApi.Migrations
 {
     [DbContext(typeof(BoredApiContext))]
-    [Migration("20220906094749_Initial")]
+    [Migration("20220906142808_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
