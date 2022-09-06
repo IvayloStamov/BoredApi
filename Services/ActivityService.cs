@@ -50,14 +50,12 @@ namespace BoredApi.Services
                 .Where(x => x.GroupId == groupId)
                 .ToListAsync();
 
-            foreach (var ga in groupActivities)
+            bool active = groupActivities.Any(x => x.Status == Status.Pending ||
+            (x.Status == Status.Accepted && x.EndDate == null));
+            if(active)
             {
-                if (ga.Status == Status.Pending || (ga.Status == Status.Accepted && ga.EndDate == null))
-                {
-                    throw new Exception("There is already an active activity.");
-                }
+                throw new Exception("There is already an active activity.");
             }
-
             _boredApiContext.Activities.Add(activity);
             await _boredApiContext.SaveChangesAsync();
 
