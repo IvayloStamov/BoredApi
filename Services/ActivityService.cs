@@ -1,6 +1,7 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.DataModels.Enums;
 using BoredApi.Data.Models;
+using BoredApi.Data.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -11,30 +12,17 @@ namespace BoredApi.Services
     public class ActivityService : IActivityService
     {
         private readonly BoredApiContext _boredApiContext;
-        private static readonly HttpClient HttpClient = new HttpClient();
-        public ActivityService(BoredApiContext boredApiContext)
+        private readonly IBoredApiService _boredApiService;
+        public ActivityService(BoredApiContext boredApiContext, IBoredApiService boredApiService)
         {
             _boredApiContext = boredApiContext;
-        }
+            _boredApiService = boredApiService;
+    }
 
         public async Task<ActionResult<string>> GetRandomActivityAloneAsync()
         {
-            var Url = $"http://www.boredapi.com/api/activity?participants={1}";
-
-            var response = await HttpClient.GetAsync(Url);
-            response.EnsureSuccessStatusCode();
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-
-            BoredApiResponse? boredApiResponse = JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
-            string activityName = boredApiResponse.Activity;
-
-            Activity activity = new Activity()
-            {
-                Name = activityName,
-            };
-
-            return activityName;
+            var result = await _boredApiService.CallBoredApiAsync(1);
+            return result.Name;
         }
 
         public async Task<ActionResult<string>> GetRandomActivityInGroupAsync(int userId, int groupId)
@@ -45,31 +33,18 @@ namespace BoredApi.Services
             if (group == null)
             {
                 // TODO: Use proper exceptions
-                throw new KeyNotFoundException($"A group with the id ({groupId}) does not exist.");
+                throw new SuchAGroupDoesNotExistException(groupId);
             }
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"A user with the id ({userId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(userId);
             }
 
-            // TODO: Refactor the code, extract it to another service
             int numberOfPeople = group.UserGroups.Count;
-            var Url = $"http://www.boredapi.com/api/activity?participants={numberOfPeople}";
 
-            var response = await HttpClient.GetAsync(Url);
-            response.EnsureSuccessStatusCode();
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-
-            BoredApiResponse? boredApiResponse = JsonConvert.DeserializeObject<BoredApiResponse>(jsonString);
-            string activityName = boredApiResponse.Activity;
-
-            Activity activity = new Activity()
-            {
-                Name = activityName,
-            };
+            Activity activity = await _boredApiService.CallBoredApiAsync(numberOfPeople);
 
             var groupActivities = await _boredApiContext.GroupActivities
                 .Where(x => x.GroupId == groupId)
@@ -118,7 +93,7 @@ namespace BoredApi.Services
                 await _boredApiContext.SaveChangesAsync();
             }
 
-            return activityName;
+            return activity.Name;
         }
 
         // TODO: Implement Error handling middleware / BadRequest should be returned
