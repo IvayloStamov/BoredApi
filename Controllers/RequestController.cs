@@ -18,7 +18,7 @@ namespace BoredApi.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<List<RequestDto>>> GetUserRequests(int userId)
         {
-            return await _requestService.GetAllRequestForUserAsync(userId);
+            return await _requestService.GetAllActiveRequestForUserAsync(userId);
         }
 
         [HttpPut("{userId}, {groupId}")]
