@@ -1,5 +1,6 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.DataModels.Enums;
+using BoredApi.Data.Models.Exceptions;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +23,12 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"A user with the id ({userId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(userId);
             }
 
             if (!user.UserGroups.Any(x => x.GroupId == groupId))
             {
-                throw new Exception("The user is not poart of the group");
+                throw new UserIsNotPartOfTheGroupException(userId);
             }
 
             var joinRequests = await _boredApiContext.JoinActivityRequests
@@ -41,7 +42,7 @@ namespace BoredApi.Services
 
             if (joinRequests == null)
             {
-                throw new Exception("There are no requests currently.");
+                throw new NoActiveRequestsException();
             }
 
             joinRequests.HasAccepted = request.Status;
@@ -52,6 +53,7 @@ namespace BoredApi.Services
                 .Include(x => x.JoinActivityRequests)
                 .Where(x => x.GroupId == groupId)
                 .Where(x => x.JoinActivityRequests.Any(z => z.UserId == userId))
+                .Where(x => x.Status == Status.Pending)
                 .FirstOrDefaultAsync();
 
             if (joinRequests.HasAccepted == Status.Declined)
@@ -60,21 +62,9 @@ namespace BoredApi.Services
                 await _boredApiContext.SaveChangesAsync();
             }
 
-            bool isAcceptedByAll = false;
-            if ((int)joinRequests.HasAccepted == 1)
-            {
-                isAcceptedByAll = true;
-                foreach (var ga in groupActivity.JoinActivityRequests)
-                {
-                    if (ga.HasAccepted != Status.Accepted)
-                    {
-                        isAcceptedByAll = false;
-                        break;
-                    }
-                }
-            }
+            bool isAcceptedByAll = groupActivity.JoinActivityRequests.All(x => x.HasAccepted == Status.Accepted);
 
-            if(isAcceptedByAll)
+            if (isAcceptedByAll)
             {
                 groupActivity.Status = Status.Accepted;
                 await _boredApiContext.SaveChangesAsync();
@@ -88,18 +78,17 @@ namespace BoredApi.Services
 
             return requestDto;
         }
-
-        public async Task<ActionResult<List<RequestDto>>> GetAllRequestForUserAsync(int userId)
+        public async Task<ActionResult<List<RequestDto>>> GetAllActiveRequestForUserAsync(int userId)
         {
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"A user with the id ({userId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(userId);
             }
 
             var requests = await _boredApiContext.JoinActivityRequests
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId && x.HasAccepted == Status.Pending)
                 .Select(x => new RequestDto()
                 {
                     Name = x.Name,
@@ -109,12 +98,11 @@ namespace BoredApi.Services
 
             if (requests.Count == 0)
             {
-                throw new Exception("There are not currently requests.");
+                throw new NoActiveRequestsException();
             }
 
             return requests;
         }
-
         public async Task<ActionResult<RequestDto>> GetRequestForUserAsync(int userId, int groupId)
         {
             var user = await _boredApiContext.Users
@@ -123,19 +111,19 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"A user with the id ({userId}) does not exist.");
+                throw new SuchAUserDoesNotExistException(userId);
             }
 
             var group = await _boredApiContext.Groups
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new Exception($"A group with the id ({groupId}) does not exist.");
+                throw new SuchAGroupDoesNotExistException(groupId);
             }
 
             if (!user.UserGroups.Any(x => x.GroupId == groupId))
             {
-                throw new Exception("The user is not poart of the group");
+                throw new UserIsNotPartOfTheGroupException(userId);
             }
 
             var joinRequests = await _boredApiContext.JoinActivityRequests
@@ -148,9 +136,8 @@ namespace BoredApi.Services
 
             if (joinRequests == null)
             {
-                throw new Exception("There are not currently requests.");
+                throw new NoActiveRequestsException();
             }
-            // TODO: JoinActivityRequest Status needs to become declined, when the activity is declined
             RequestDto requestDto = new RequestDto()
             {
                 Name = joinRequests.Name,

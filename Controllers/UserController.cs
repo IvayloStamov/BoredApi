@@ -38,14 +38,6 @@ namespace BoredApi.Controllers
             {
                 return BadRequest($"User with the same username {user.Username} already exists.");
             }
-
         }
-
-        [HttpGet("{groupId}")]
-        public async Task<ActionResult<List<UserWithActivitiesDto>>> GetUsersWithActivities(int groupId)
-        {
-            return await _userService.ShowAllRequestsAsync(groupId);
-        }
-
     }
 }

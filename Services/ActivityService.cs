@@ -41,20 +41,22 @@ namespace BoredApi.Services
                 throw new SuchAUserDoesNotExistException(userId);
             }
 
-            int numberOfPeople = group.UserGroups.Count;
-
-            Activity activity = await _boredApiService.CallBoredApiAsync(numberOfPeople);
 
             var groupActivities = await _boredApiContext.GroupActivities
                 .Where(x => x.GroupId == groupId)
                 .ToListAsync();
-
+            // TODO: Test - accept activity then end it, then try to start a new one / the cancel endpint;
             bool active = groupActivities.Any(x => x.Status == Status.Pending ||
             (x.Status == Status.Accepted && x.EndDate == null));
             if (active)
             {
                 throw new ActivActivityException();
             }
+
+            int numberOfPeople = group.UserGroups.Count;
+
+            Activity activity = await _boredApiService.CallBoredApiAsync(numberOfPeople);
+
             await _boredApiContext.Activities.AddAsync(activity);
             await _boredApiContext.SaveChangesAsync();
 
@@ -91,8 +93,6 @@ namespace BoredApi.Services
 
             return activity.Name;
         }
-
-        // TODO: Implement Error handling middleware / BadRequest should be returned
         public async Task<ActionResult<string>> EndAnActivityAsync(int userId, int groupId)
         {
             var group = await _boredApiContext.Groups
@@ -116,7 +116,7 @@ namespace BoredApi.Services
             }
 
             GroupActivity? groupActivity = await _boredApiContext.GroupActivities
-                .Where(x => x.GroupId == groupId && x.Status != Status.Declined)
+                .Where(x => x.GroupId == groupId && x.Status != Status.Declined && x.EndDate == null)
                 .FirstOrDefaultAsync();
 
             string response = "";
@@ -144,4 +144,5 @@ namespace BoredApi.Services
             return response;
         }
     }
+        // TODO: Implement Error handling middleware / BadRequest should be returned
 }
