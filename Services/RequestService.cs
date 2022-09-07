@@ -52,6 +52,7 @@ namespace BoredApi.Services
                 .Include(x => x.JoinActivityRequests)
                 .Where(x => x.GroupId == groupId)
                 .Where(x => x.JoinActivityRequests.Any(z => z.UserId == userId))
+                .Where(x => x.Status == Status.Pending)
                 .FirstOrDefaultAsync();
 
             if (joinRequests.HasAccepted == Status.Declined)
@@ -60,21 +61,9 @@ namespace BoredApi.Services
                 await _boredApiContext.SaveChangesAsync();
             }
 
-            bool isAcceptedByAll = false;
-            if ((int)joinRequests.HasAccepted == 1)
-            {
-                isAcceptedByAll = true;
-                foreach (var ga in groupActivity.JoinActivityRequests)
-                {
-                    if (ga.HasAccepted != Status.Accepted)
-                    {
-                        isAcceptedByAll = false;
-                        break;
-                    }
-                }
-            }
+            bool isAcceptedByAll = groupActivity.JoinActivityRequests.All(x => x.HasAccepted == Status.Accepted);
 
-            if(isAcceptedByAll)
+            if (isAcceptedByAll)
             {
                 groupActivity.Status = Status.Accepted;
                 await _boredApiContext.SaveChangesAsync();
@@ -88,7 +77,6 @@ namespace BoredApi.Services
 
             return requestDto;
         }
-
         public async Task<ActionResult<List<RequestDto>>> GetAllRequestForUserAsync(int userId)
         {
 
@@ -114,7 +102,6 @@ namespace BoredApi.Services
 
             return requests;
         }
-
         public async Task<ActionResult<RequestDto>> GetRequestForUserAsync(int userId, int groupId)
         {
             var user = await _boredApiContext.Users

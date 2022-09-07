@@ -11,6 +11,8 @@ namespace BoredApi.Services
     public class UserRepository : IUserService
     {
         // TODO: Rename the services that are not services to repositories 
+        // TODO: Create a group with 1 user and put the same user in the users array
+
         private readonly BoredApiContext _boredApiContext;
 
         public UserRepository(BoredApiContext boredApiContext)
