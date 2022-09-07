@@ -23,10 +23,10 @@ namespace BoredApi.Controllers
             return await _groupService.CreateGroupAsync(adminId, dto);
         }
 
-        [HttpPut("{ownerId}")]
-        public async Task<ActionResult<ReturnGroupDto>> AddNewUser(int groupId, int newUserId, int ownerId)
+        [HttpPut("{memberId}")]
+        public async Task<ActionResult<ReturnGroupDto>> AddNewUser(int groupId, int newUserId, int memberId)
         {
-            return await _groupService.AddUserToGroupAsync(groupId, newUserId, ownerId);
+            return await _groupService.AddUserToGroupAsync(groupId, newUserId, memberId);
         }
 
         [HttpGet]

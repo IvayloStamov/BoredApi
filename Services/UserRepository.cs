@@ -10,9 +10,6 @@ namespace BoredApi.Services
 {
     public class UserRepository : IUserService
     {
-        // TODO: Rename the services that are not services to repositories 
-        // TODO: Create a group with 1 user and put the same user in the users array
-
         private readonly BoredApiContext _boredApiContext;
 
         public UserRepository(BoredApiContext boredApiContext)
@@ -61,24 +58,6 @@ namespace BoredApi.Services
                     Username = x.Username
                 })
                 .ToListAsync();
-
-            return returnResult;
-        }
-
-        public async Task<ActionResult<List<UserWithActivitiesDto>>> ShowAllRequestsAsync(int groupId)
-        {
-            var returnResult = await _boredApiContext.JoinActivityRequests
-                .Include(x => x.User)
-                .ThenInclude(y => y.UserGroups.Where(z => z.GroupId == groupId))
-                .Select(x => new UserWithActivitiesDto()
-                {
-                    Username = x.User.Username,
-                    Requests = x.User.JoinActivityRequests.Select(a => new ActivityDto()
-                    {
-                        ActivityName = a.Name,
-                        Status = a.HasAccepted
-                    }).ToList()
-                }).ToListAsync();
 
             return returnResult;
         }
