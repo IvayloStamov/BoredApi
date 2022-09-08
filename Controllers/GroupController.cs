@@ -3,6 +3,7 @@ using BoredApi.Services;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace BoredApi.Controllers
 {
@@ -30,9 +31,14 @@ namespace BoredApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ReturnGroupDto>>> GetAllUsers()
+        public async Task<ActionResult<List<ReturnGroupDto>>> GetAllGroups()
         {
             return await _groupService.ReturnAllGroupsAsync();
+        }
+        [HttpGet("{groupId}")]
+        public async Task<ActionResult<List<UserDto>>> GetAllUserUsersInAGroup(int groupId)
+        {
+            return await _groupService.ReturnAllUsersFromGroupAsync(groupId);
         }
 
         [HttpDelete("{ownerId}")]

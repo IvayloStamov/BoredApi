@@ -1,7 +1,6 @@
 ﻿using BoredApi.Data;
 using BoredApi.Data.Models;
 using BoredApi.Data.Models.Exceptions;
-using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;

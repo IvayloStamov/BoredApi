@@ -1,6 +1,7 @@
 ﻿using BoredApi.Data.Models;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace BoredApi.Services
 {
@@ -10,6 +11,8 @@ namespace BoredApi.Services
         public Task<ActionResult<ReturnGroupDto>> AddUserToGroupAsync(int groupId, int newUserId, int ownerId);
         public Task<ActionResult<List<ReturnGroupDto>>> ReturnAllGroupsAsync();
         public Task<ActionResult<ReturnGroupDto>> DeleteUserFromGroupAsync(int groupId, int userId, int ownerId);
+        public Task<ActionResult<List<UserDto>>> ReturnAllUsersFromGroupAsync(int groupId);
+
 
     }
 }

@@ -4,6 +4,7 @@ using BoredApi.Data.Models.Exceptions;
 using BoredApi.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace BoredApi.Services
 {
@@ -182,6 +183,28 @@ namespace BoredApi.Services
             };
 
             return groupDto;
+        }
+        public async Task<ActionResult<List<UserDto>>> ReturnAllUsersFromGroupAsync(int groupId)
+        {
+            var group = await _boredApiContext.Groups
+                .Include(ug => ug.UserGroups)
+                .ThenInclude(u => u.User)
+                .FirstOrDefaultAsync(x => x.Id == groupId);
+            if (group == null)
+            {
+                throw new SuchAGroupDoesNotExistException(groupId);
+            }
+
+            var users = group.UserGroups
+                .Select(x => new UserDto()
+            {
+                FirstName = x.User.FirstName,
+                LastName = x.User.LastName,
+                Username = x.User.Username
+                })
+                .ToList();
+
+            return users;
         }
     }
 }

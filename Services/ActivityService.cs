@@ -4,8 +4,6 @@ using BoredApi.Data.Models;
 using BoredApi.Data.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
-using Newtonsoft.Json;
 
 namespace BoredApi.Services
 {

@@ -11,7 +11,7 @@ namespace BoredApi.Middleware
             {
                 await next(context);
             }
-            catch (UserAlreadyExistsException e)
+            catch (Exception e)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 await context.Response.WriteAsync(e.Message);
