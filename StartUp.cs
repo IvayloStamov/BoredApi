@@ -22,6 +22,7 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBoredApiService, BoredApiService>();
+
 //builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
