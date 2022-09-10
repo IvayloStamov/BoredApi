@@ -1,5 +1,8 @@
 ﻿using BoredApi.Data.Models.Exceptions;
 using System.Net;
+using Newtonsoft.Json;
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BoredApi.Middleware
 {
@@ -13,8 +16,10 @@ namespace BoredApi.Middleware
             }
             catch (Exception e)
             {
+                var message = e.Message;
+
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsync(e.Message);
+                await context.Response.WriteAsJsonAsync(message);
             }
         }
     }
