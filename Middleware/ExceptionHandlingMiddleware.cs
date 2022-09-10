@@ -17,8 +17,6 @@ namespace BoredApi.Middleware
             catch (Exception e)
             {
                 var message = e.Message;
-                var js = JObject.Parse(message);
-
 
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 await context.Response.WriteAsJsonAsync(message);
