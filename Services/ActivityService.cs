@@ -127,14 +127,14 @@ namespace BoredApi.Services
             if ((int)groupActivity.Status == 0)
             {
                 groupActivity.Status = Status.Declined;
-                response = "The activity has been cancelled";
+                response = "The activity has been cancelled.";
 
                 joinRequests.ForEach(x => x.HasAccepted = Status.Declined);
             }
             else if (((int)groupActivity.Status == 1 && groupActivity.EndDate == null))
             {
                 groupActivity.EndDate = DateTime.Now;
-                response = "The activity has ended";
+                response = "The activity has ended.";
             }
 
             await _boredApiContext.SaveChangesAsync();
