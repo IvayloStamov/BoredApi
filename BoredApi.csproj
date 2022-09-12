@@ -25,4 +25,11 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="BoredApi.Test\**" />
+    <None Remove="BoredApi.Test\**" />
+    <EmbeddedResource Remove="BoredApi.Test\**" />
+    <Content Remove="BoredApi.Test\**" />
+  </ItemGroup>
+
 </Project>
