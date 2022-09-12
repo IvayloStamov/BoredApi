@@ -1,6 +1,6 @@
-﻿using BoredApi.Data.DataModels.Enums;
+﻿using BoredApi.Data.Models.Enums;
 
-namespace BoredApi.Services.ViewModels
+namespace BoredApi.Dtos
 {
     public class RequestDto
     {

@@ -1,6 +1,8 @@
-﻿using BoredApi.Data.Models;
+﻿using System.Threading.Tasks;
+using BoredApi.Data.Models;
 using BoredApi.Data.Models.Exceptions;
 using BoredApi.Services;
+using BoredApi.Services.BoredApi;
 using BoredApi.Test.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
@@ -9,27 +11,13 @@ namespace BoredApi.Test.Services
 {
     public class ActivityServiceTest
     {
-        IBoredApiService _boredApiService;
+        private readonly IActivityProvider _activityProvider;
+
         public ActivityServiceTest()
         {
-            _boredApiService = new BoredApiService();
+            _activityProvider = new BoredApiActivityProvider();
         }
-        [Fact]
-        public async Task GetRandomActivityAloneAsync_ShouldReturnRandomActivityInTheFormOfString()
-        {
-            //Arrange
-            using var data = DatabaseMock.Instance;
 
-            var activityService = new ActivityService(data, _boredApiService);
-
-            //Act
-
-            var result = await activityService.GetRandomActivityAloneAsync();
-
-            //Assert
-
-            Assert.True(result is ActionResult<string>);
-        }
         [Fact]
         public async Task GetRandomActivityInGroupAsync_RandomActivityInTheFormOfStringBasedOnTheNumberOfUsersInTheGroup()
         {
@@ -42,7 +30,7 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act
 
@@ -52,6 +40,7 @@ namespace BoredApi.Test.Services
 
             Assert.True(result is ActionResult<string>);
         }
+
         [Fact]
         public async Task GetRandomActivityInGroupAsync_ShouldThrowSuchAGroupDoesNotExistExceptionIfTheGroupDoesNotExist()
         {
@@ -64,13 +53,14 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act and Assert
 
             await Assert.ThrowsAsync<SuchAGroupDoesNotExistException>(() =>
-            activityService.GetRandomActivityInGroupAsync(1, 2));
+                activityService.GetRandomActivityInGroupAsync(1, 2));
         }
+
         [Fact]
         public async Task GetRandomActivityInGroupAsync_ShouldThrowSuchAUserDoesNotExistExceptionIfTheUserDoesNotExist()
         {
@@ -83,18 +73,19 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act and Assert
 
             await Assert.ThrowsAsync<SuchAUserDoesNotExistException>(() =>
-            activityService.GetRandomActivityInGroupAsync(2, 1));
+                activityService.GetRandomActivityInGroupAsync(2, 1));
         }
+
         [Fact]
-        public async Task GetRandomActivityInGroupAsync_ShouldThrowActivActivityExceptionIfThereIsAnActiveActivity()
+        public async Task GetRandomActivityInGroupAsync_ShouldThrowActiveActivityExceptionIfThereIsAnActiveActivity()
         {
             //Arrange
-            using var data = DatabaseMock.Instance;
+            await using var data = DatabaseMock.Instance;
             var userOne = new User { Id = 1 };
             var groupOne = new Group { Id = 1, OwnerId = 1 };
 
@@ -102,7 +93,7 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act 
 
@@ -111,8 +102,9 @@ namespace BoredApi.Test.Services
             //Assert
 
             await Assert.ThrowsAsync<ActivActivityException>(() =>
-            activityService.GetRandomActivityInGroupAsync(1, 1));
+                activityService.GetRandomActivityInGroupAsync(1, 1));
         }
+
         [Fact]
         public async Task EndAnActivityAsync_ShouldThrowSuchAGroupDoesNotExistExceptionIfTheGroupDoesNotExist()
         {
@@ -125,13 +117,14 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act and Assert
 
             await Assert.ThrowsAsync<SuchAGroupDoesNotExistException>(() =>
-            activityService.EndAnActivityAsync(1, 2));
+                activityService.EndAnActivityAsync(1, 2));
         }
+
         [Fact]
         public async Task EndAnActivityAsync_SuchAUserDoesNotExistExceptionIfTheUserDoesNotExist()
         {
@@ -144,13 +137,14 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act and Assert
 
             await Assert.ThrowsAsync<SuchAUserDoesNotExistException>(() =>
-            activityService.EndAnActivityAsync(2, 1));
+                activityService.EndAnActivityAsync(2, 1));
         }
+
         [Fact]
         public async Task EndAnActivityAsync_ShouldReturnThatThereAreNoActiveActivitiesIfThereAreNone()
         {
@@ -163,18 +157,19 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act
-            
+
             var result = await activityService.EndAnActivityAsync(1, 1);
-            
+
             string expected = "Currently there is no active activity.";
 
             //Assert
 
-            Assert.Equal(expected, result.Value.ToString()) ;
+            Assert.Equal(expected, result.Value.ToString());
         }
+
         [Fact]
         public async Task EndAnActivityAsync_ShouldReturnTheActivityHasBeenCancelledIfItHasNotBeenAccepted()
         {
@@ -187,7 +182,7 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act
             await activityService.GetRandomActivityInGroupAsync(1, 1);
@@ -199,6 +194,7 @@ namespace BoredApi.Test.Services
 
             Assert.Equal(expected, result.Value.ToString());
         }
+
         [Fact]
         public async Task EndAnActivityAsync_ShouldReturnTheActivityHasEndedIfItHasBeenAcceptedByAll()
         {
@@ -211,12 +207,12 @@ namespace BoredApi.Test.Services
             data.Groups.Add(groupOne);
             await data.SaveChangesAsync();
 
-            var activityService = new ActivityService(data, _boredApiService);
+            var activityService = new ActivityService(data, _activityProvider);
 
             //Act
             await activityService.GetRandomActivityInGroupAsync(1, 1);
             var result = await activityService.EndAnActivityAsync(1, 1);
-            
+
             string expected = "The activity has been cancelled.";
 
             //Assert

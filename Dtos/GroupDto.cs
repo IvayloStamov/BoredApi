@@ -1,6 +1,4 @@
-﻿using BoredApi.Data.Models;
-
-namespace BoredApi.Services.ViewModels
+﻿namespace BoredApi.Dtos
 {
     public class GroupDto
     {

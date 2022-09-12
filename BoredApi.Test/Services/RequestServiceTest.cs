@@ -1,7 +1,9 @@
-﻿using BoredApi.Data.DataModels.Enums;
+﻿using System;
+using System.Threading.Tasks;
 using BoredApi.Data.Models;
+using BoredApi.Data.Models.Enums;
+using BoredApi.Dtos;
 using BoredApi.Services;
-using BoredApi.Services.ViewModels;
 using BoredApi.Test.Mocks;
 using Xunit;
 
@@ -11,8 +13,8 @@ namespace BoredApi.Test.Services
     {
         public RequestServiceTest()
         {
-
         }
+
         [Fact]
         public async Task ChangeRequestStatusAsync_ShouldChangeTheStatusOfTheRequest1()
         {
@@ -22,13 +24,16 @@ namespace BoredApi.Test.Services
             var userTwo = new User { Id = 2 };
 
             var groupOne = new Group { Id = 1, OwnerId = 1 };
-            var groupActiviryOne = new GroupActivity { Id = 1 ,
-                GroupId = 1, ActivityId = 1, Status = Status.Pending, StartDate = DateTime.Now};
+            var groupActiviryOne = new GroupActivity
+            {
+                Id = 1,
+                GroupId = 1, ActivityId = 1, Status = Status.Pending, StartDate = DateTime.Now
+            };
             var joinRequestOne = new JoinActivityRequest { UserId = 1, GroupActivityId = 1, HasAccepted = Status.Pending };
             data.Users.Add(userOne);
             data.Users.Add(userTwo);
             data.Groups.Add(groupOne);
-            
+
             data.GroupActivities.Add(groupActiviryOne);
             await data.SaveChangesAsync();
             data.JoinActivityRequests.Add(joinRequestOne);
@@ -47,6 +52,7 @@ namespace BoredApi.Test.Services
 
             Assert.Equal(Status.Accepted, result.Value.HasAccepted);
         }
+
         [Fact]
         public async Task ChangeRequestStatusAsync_ShouldChangeTheStatusOfTheRequest()
         {
@@ -56,13 +62,13 @@ namespace BoredApi.Test.Services
             var userTwo = new User { Id = 2 };
 
             var groupOne = new Group { Id = 1, OwnerId = 1 };
-           
+
             var joinRequestOne = new JoinActivityRequest { UserId = 1, GroupActivityId = 1, HasAccepted = Status.Pending };
             data.Users.Add(userOne);
             data.Users.Add(userTwo);
             data.Groups.Add(groupOne);
-
-            data.GroupActivities.Add(groupActiviryOne);
+            // TODO:
+            // data.GroupActivities.Add(groupActivityOne);
             await data.SaveChangesAsync();
             data.JoinActivityRequests.Add(joinRequestOne);
 

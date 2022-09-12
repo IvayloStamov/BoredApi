@@ -1,5 +1,5 @@
-﻿using BoredApi.Data.DataModels.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using BoredApi.Data.Models.Enums;
 
 namespace BoredApi.Data.Models
 {

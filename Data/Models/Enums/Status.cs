@@ -1,4 +1,4 @@
-﻿namespace BoredApi.Data.DataModels.Enums
+﻿namespace BoredApi.Data.Models.Enums
 {
     public enum Status
     {

@@ -1,7 +1,9 @@
-﻿using BoredApi.Services.ViewModels;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BoredApi.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BoredApi.Services
+namespace BoredApi.Services.Interfaces
 {
     public interface IRequestService
     {

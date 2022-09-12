@@ -1,4 +1,6 @@
-﻿namespace BoredApi.Services.ViewModels
+﻿using System.Collections.Generic;
+
+namespace BoredApi.Dtos
 {
     public class ReturnGroupDto
     {

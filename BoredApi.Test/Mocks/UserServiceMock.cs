@@ -1,7 +1,10 @@
-﻿using BoredApi.Services;
-using Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BoredApi.Dtos;
+using BoredApi.Services;
+using BoredApi.Services.Interfaces;
 using Moq;
-using Microsoft.AspNetCore.Mvc;
+
 namespace BoredApi.Test.Mocks
 {
     public static class UserServiceMock

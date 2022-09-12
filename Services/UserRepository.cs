@@ -1,9 +1,12 @@
-﻿using BoredApi.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BoredApi.Data;
 using BoredApi.Data.Models;
-using BoredApi.Data.Models.Exceptions;
+using BoredApi.Dtos;
+using BoredApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 namespace BoredApi.Services
 {
@@ -18,14 +21,6 @@ namespace BoredApi.Services
 
         public async Task<ActionResult<List<UserDto>>> AddUserToTheDatabaseAsync(UserDto user)
         {
-            string username = user.Username;
-
-            var userToCheck = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
-            if (userToCheck != null)
-            {
-                throw new UserAlreadyExistsException(user.Username);
-            }
-
             User newUser = new User
             {
                 Username = user.Username,
@@ -36,15 +31,7 @@ namespace BoredApi.Services
             await _boredApiContext.AddAsync(newUser);
             await _boredApiContext.SaveChangesAsync();
 
-            var returnResult = await _boredApiContext.Users
-                .Select(x => new UserDto()
-                {
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Username = x.Username
-                })
-                .ToListAsync();
-            return returnResult;
+            return await GetAllUsersAsync();
         }
 
         public async Task<List<UserDto>> GetAllUsersAsync()

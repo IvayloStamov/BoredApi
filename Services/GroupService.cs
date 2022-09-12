@@ -1,10 +1,13 @@
-﻿using BoredApi.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BoredApi.Data;
 using BoredApi.Data.Models;
-using BoredApi.Data.Models.Exceptions;
-using BoredApi.Services.ViewModels;
+using BoredApi.Dtos;
+using BoredApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 namespace BoredApi.Services
 {
@@ -16,6 +19,7 @@ namespace BoredApi.Services
         {
             _boredApiContext = boredApiContext;
         }
+
         public async Task<ActionResult<List<ReturnGroupDto>>> CreateGroupAsync(int ownerId, GroupDto dto)
         {
             var groupDto = await _boredApiContext.Groups
@@ -23,13 +27,13 @@ namespace BoredApi.Services
 
             if (groupDto != null)
             {
-                throw new GroupAlreadyExistsException(dto.Name);
+                throw new ApplicationException($"GroupAlreadyExistsException {dto.Name}");
             }
 
             var owner = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == ownerId);
             if (owner == null)
             {
-                throw new SuchAUserDoesNotExistException(ownerId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {ownerId}");
             }
 
             Group group = new Group()
@@ -44,8 +48,8 @@ namespace BoredApi.Services
                 UserId = ownerId,
                 GroupId = group.Id,
                 UserEntryDate = DateTime.Now,
-                isAdmin = true,
-                isOwner = true
+                IsAdmin = true,
+                IsOwner = true
             };
 
             group.UserGroups.Add(ownerUserGroup);
@@ -61,39 +65,39 @@ namespace BoredApi.Services
                     Name = x.Name,
                     OwnerId = x.OwnerId,
                     Users = x.UserGroups
-                    .Select(x => x.UserId)
-                    .ToList()
+                        .Select(x => x.UserId)
+                        .ToList()
                 }).ToListAsync();
 
             return outputResult;
         }
+
         public async Task<ActionResult<ReturnGroupDto>> AddUserToGroupAsync(int groupId, int newUserId, int memberId)
         {
-
             var group = await _boredApiContext.Groups
                 .Include(ug => ug.UserGroups)
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new SuchAGroupDoesNotExistException(groupId);
+                throw new ApplicationException($"SuchAGroupDoesNotExistException {groupId}");
             }
 
             if (memberId != group.OwnerId)
             {
-                throw new UserIsNotTheOwnerOfTheGroupException(memberId);
+                throw new ApplicationException($"UserIsNotTheOwnerOfTheGroupException {memberId}");
             }
 
             var newUser = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == newUserId);
             if (newUser == null)
             {
-                throw new SuchAUserDoesNotExistException(newUserId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {newUserId}");
             }
 
             bool isInTheGroup = group.UserGroups.Any(x => x.UserId == newUserId);
 
             if (isInTheGroup)
             {
-                throw new UserAlreadyPartOfTheGroupException(newUserId);
+                throw new ApplicationException($"UserAlreadyPartOfTheGroupException {newUserId}");
             }
 
             UserGroup userGroup = new UserGroup()
@@ -117,6 +121,7 @@ namespace BoredApi.Services
 
             return groupDto;
         }
+
         public async Task<ActionResult<List<ReturnGroupDto>>> ReturnAllGroupsAsync()
         {
             var dtos = await _boredApiContext.Groups
@@ -125,13 +130,14 @@ namespace BoredApi.Services
                     Name = x.Name,
                     OwnerId = x.OwnerId,
                     Users = x.UserGroups
-                    .Select(y => y.UserId)
-                    .ToList()
+                        .Select(y => y.UserId)
+                        .ToList()
                 })
                 .ToListAsync();
 
             return dtos;
         }
+
         public async Task<ActionResult<ReturnGroupDto>> DeleteUserFromGroupAsync(int groupId, int userId, int ownerId)
         {
             var group = await _boredApiContext.Groups
@@ -139,30 +145,30 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new SuchAGroupDoesNotExistException(groupId);
+                throw new ApplicationException($"SuchAGroupDoesNotExistException {groupId}");
             }
 
             if (ownerId != group.OwnerId)
             {
-                throw new UserIsNotTheOwnerOfTheGroupException(ownerId);
+                throw new ApplicationException($"UserIsNotTheOwnerOfTheGroupException {ownerId}");
             }
 
             if (ownerId == userId)
             {
-                throw new OwnerCannotRemoveThemselvesFromTheGroupException();
+                throw new ApplicationException("OwnerCannotRemoveThemselvesFromTheGroupException");
             }
 
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new SuchAUserDoesNotExistException(userId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {userId}");
             }
 
             bool isInTheGroup = group.UserGroups.Any(x => x.UserId == userId);
 
             if (!isInTheGroup)
             {
-                throw new UserIsNotPartOfTheGroupException(userId);
+                throw new ApplicationException($"UserIsNotPartOfTheGroupException {userId}");
             }
 
             var userGroupToRemoved = await _boredApiContext.UserGroups.FirstAsync(x => x.GroupId == groupId && x.UserId == userId);
@@ -174,7 +180,7 @@ namespace BoredApi.Services
             await _boredApiContext.SaveChangesAsync();
 
             Group output = await _boredApiContext.Groups
-               .FirstAsync(x => x.Id == groupId);
+                .FirstAsync(x => x.Id == groupId);
             ReturnGroupDto groupDto = new ReturnGroupDto()
             {
                 Name = output.Name,
@@ -184,6 +190,7 @@ namespace BoredApi.Services
 
             return groupDto;
         }
+
         public async Task<ActionResult<List<UserDto>>> ReturnAllUsersFromGroupAsync(int groupId)
         {
             var group = await _boredApiContext.Groups
@@ -192,15 +199,15 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new SuchAGroupDoesNotExistException(groupId);
+                throw new ApplicationException($"SuchAGroupDoesNotExistException {groupId}");
             }
 
             var users = group.UserGroups
                 .Select(x => new UserDto()
-            {
-                FirstName = x.User.FirstName,
-                LastName = x.User.LastName,
-                Username = x.User.Username
+                {
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    Username = x.User.Username
                 })
                 .ToList();
 

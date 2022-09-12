@@ -1,6 +1,6 @@
-﻿using BoredApi.Data.Models;
+﻿using System.Collections.Generic;
 
-namespace BoredApi.Services.ViewModels
+namespace BoredApi.Dtos
 {
     public class UserWithActivitiesDto
     {
