@@ -1,7 +1,13 @@
 using BoredApi.Data;
 using BoredApi.Middleware;
 using BoredApi.Services;
+using BoredApi.Services.BoredApi;
+using BoredApi.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +27,7 @@ builder.Services.AddScoped<IUserService, UserRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
-builder.Services.AddScoped<IBoredApiService, BoredApiService>();
+builder.Services.AddScoped<IActivityProvider, BoredApiActivityProvider>();
 
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 

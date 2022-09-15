@@ -1,6 +1,8 @@
-﻿using BoredApi.Services;
-using BoredApi.Services.ViewModels;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BoredApi.Dtos;
+using BoredApi.Services;
+using BoredApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoredApi.Controllers

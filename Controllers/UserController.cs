@@ -1,12 +1,10 @@
-﻿using BoredApi.Data;
-using BoredApi.Data.Models;
-using BoredApi.Data.Models.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using BoredApi.Dtos;
 using BoredApi.Services;
-using BoredApi.Services.ViewModels;
-using Microsoft.AspNetCore.Http;
+using BoredApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Models;
 
 namespace BoredApi.Controllers
 {
@@ -20,24 +18,17 @@ namespace BoredApi.Controllers
         {
             _userService = addUserService;
         }
+
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> Get()
         {
-            
             return await _userService.GetAllUsersAsync();
         }
 
         [HttpPost]
         public async Task<ActionResult<List<UserDto>>> AddUser(UserDto user)
         {
-            try
-            {
-                return await _userService.AddUserToTheDatabaseAsync(user);
-            }
-            catch (UserAlreadyExistsException)
-            {
-                return BadRequest($"User with the same username {user.Username} already exists.");
-            }
+            return await _userService.AddUserToTheDatabaseAsync(user);
         }
     }
 }

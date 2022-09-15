@@ -1,6 +1,7 @@
-﻿using BoredApi.Data.DataModels.Enums;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using BoredApi.Data.Models.Enums;
 
 namespace BoredApi.Data.Models
 {

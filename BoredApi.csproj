@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- <ImplicitUsings>enable</ImplicitUsings> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Compile Remove="BoredApi.Test\**" />
+    <None Remove="BoredApi.Test\**" />
+    <EmbeddedResource Remove="BoredApi.Test\**" />
+    <Content Remove="BoredApi.Test\**" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,11 @@
-﻿using BoredApi.Data;
-using BoredApi.Data.DataModels.Enums;
-using BoredApi.Data.Models.Exceptions;
-using BoredApi.Services.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BoredApi.Data;
+using BoredApi.Data.Models.Enums;
+using BoredApi.Dtos;
+using BoredApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,12 +27,12 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new SuchAUserDoesNotExistException(userId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {userId}");
             }
 
             if (!user.UserGroups.Any(x => x.GroupId == groupId))
             {
-                throw new UserIsNotPartOfTheGroupException(userId);
+                throw new ApplicationException($"UserIsNotPartOfTheGroupException {userId}");
             }
 
             var joinRequests = await _boredApiContext.JoinActivityRequests
@@ -42,7 +46,7 @@ namespace BoredApi.Services
 
             if (joinRequests == null)
             {
-                throw new NoActiveRequestsException();
+                throw new ApplicationException("NoActiveRequestsException");
             }
 
             joinRequests.HasAccepted = request.Status;
@@ -78,13 +82,13 @@ namespace BoredApi.Services
 
             return requestDto;
         }
+
         public async Task<ActionResult<List<RequestDto>>> GetAllActiveRequestForUserAsync(int userId)
         {
-
             var user = await _boredApiContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new SuchAUserDoesNotExistException(userId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {userId}");
             }
 
             var requests = await _boredApiContext.JoinActivityRequests
@@ -98,11 +102,12 @@ namespace BoredApi.Services
 
             if (requests.Count == 0)
             {
-                throw new NoActiveRequestsException();
+                throw new ApplicationException("NoActiveRequestsException");
             }
 
             return requests;
         }
+
         public async Task<ActionResult<RequestDto>> GetRequestForUserAsync(int userId, int groupId)
         {
             var user = await _boredApiContext.Users
@@ -111,19 +116,19 @@ namespace BoredApi.Services
                 .FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
-                throw new SuchAUserDoesNotExistException(userId);
+                throw new ApplicationException($"SuchAUserDoesNotExistException {userId}");
             }
 
             var group = await _boredApiContext.Groups
                 .FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new SuchAGroupDoesNotExistException(groupId);
+                throw new ApplicationException($"SuchAGroupDoesNotExistException {groupId}");
             }
 
             if (!user.UserGroups.Any(x => x.GroupId == groupId))
             {
-                throw new UserIsNotPartOfTheGroupException(userId);
+                throw new ApplicationException($"UserIsNotPartOfTheGroupException {userId}");
             }
 
             var joinRequests = await _boredApiContext.JoinActivityRequests
@@ -131,13 +136,14 @@ namespace BoredApi.Services
                 .ThenInclude(y => y.UserGroups)
                 .Include(x => x.GroupActivity)
                 .FirstOrDefaultAsync(x => x.UserId == userId
-                && x.GroupActivity.GroupId == groupId
-                && x.HasAccepted == Status.Pending);
+                                          && x.GroupActivity.GroupId == groupId
+                                          && x.HasAccepted == Status.Pending);
 
             if (joinRequests == null)
             {
-                throw new NoActiveRequestsException();
+                throw new ApplicationException("NoActiveRequestsException");
             }
+
             RequestDto requestDto = new RequestDto()
             {
                 Name = joinRequests.Name,

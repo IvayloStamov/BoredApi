@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
 namespace BoredApi.Data.Models
 {
@@ -8,8 +8,8 @@ namespace BoredApi.Data.Models
         public Group Group { get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
-        public bool isAdmin { get; set; } = false;
-        public bool isOwner { get; set; } = false;
+        public bool IsAdmin { get; set; } = false;
+        public bool IsOwner { get; set; } = false;
         public DateTime UserEntryDate { get; set; }
     }
 }

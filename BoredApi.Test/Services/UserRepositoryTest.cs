@@ -1,8 +1,9 @@
-﻿using BoredApi.Data.Models;
+﻿using System.Threading.Tasks;
+using BoredApi.Data.Models;
 using BoredApi.Data.Models.Exceptions;
+using BoredApi.Dtos;
 using BoredApi.Services;
 using BoredApi.Test.Mocks;
-using Models;
 using Xunit;
 
 namespace BoredApi.Test.Services

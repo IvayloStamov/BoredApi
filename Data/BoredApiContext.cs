@@ -5,17 +5,17 @@ namespace BoredApi.Data
 {
     public class BoredApiContext : DbContext
     {
-
         public BoredApiContext(DbContextOptions<BoredApiContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
+
             modelBuilder.Entity<JoinActivityRequest>()
-            .HasOne(x => x.GroupActivity)
-            .WithMany(y => y.JoinActivityRequests);
+                .HasOne(x => x.GroupActivity)
+                .WithMany(y => y.JoinActivityRequests);
 
             modelBuilder.Entity<JoinActivityRequest>()
                 .HasKey(ja => new

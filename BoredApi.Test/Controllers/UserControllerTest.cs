@@ -1,13 +1,44 @@
-﻿using BoredApi.Controllers;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BoredApi.Controllers;
+using BoredApi.Dtos;
 using BoredApi.Test.Mocks;
 using Microsoft.AspNetCore.Mvc;
-using Models;
 using Xunit;
 
 namespace BoredApi.Test.Controllers
 {
+    public class ParticipateInRandomActivity
+    {
+        [Fact]
+        public async Task When_Single_New_User()
+        {
+            //user controller => register => get registered user
+            //userController => get registered user
+            //activityController => get random activity
+            //activityController => start activity
+            //activityController => end activity
+            //??? -activityController => list all user activities
+            // 
+        }
+        
+        [Fact]
+        public async Task When_User_In_Group_Of_Ten()
+        {
+            //user controller => register => get registered user
+            //userController => get registered user
+            //activityController => get random activity
+            //activityController => start activity
+            //activityController => end activity
+            //??? -activityController => list all user activities
+            // 
+        }
+    }
     public class UserControllerTest
     {
+
+       
+
         [Fact]
         public async Task Get_ShouldReturnAllUsersAsAListOfUserDtosAsync()
         {
